@@ -7,3 +7,4 @@
 
 EventType stringToEventType(const std::string& eventStr);
 int splitCSVLine(const std::string& line, std::string fields[7]);
+std::string eventTypeToString(int type);

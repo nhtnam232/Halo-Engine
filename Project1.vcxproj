@@ -18,6 +18,21 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\CSVParser.cpp" />
+    <ClCompile Include="src\HaloEngine.cpp" />
+    <ClCompile Include="src\HashTable.cpp" />
+    <ClCompile Include="src\LogAnalyzer.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\CSVParser.h" />
+    <ClInclude Include="src\DataModels.h" />
+    <ClInclude Include="src\DynamicArray.h" />
+    <ClInclude Include="src\HaloEngine.h" />
+    <ClInclude Include="src\HashTable.h" />
+    <ClInclude Include="src\LogAnalyzer.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -122,19 +137,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="CSVParser.cpp" />
-    <ClCompile Include="DynamicArray.h" />
-    <ClCompile Include="HaloEngine.cpp" />
-    <ClCompile Include="HashTable.cpp" />
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CSVParser.h" />
-    <ClInclude Include="DataModels.h" />
-    <ClInclude Include="HaloEngine.h" />
-    <ClInclude Include="HashTable.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

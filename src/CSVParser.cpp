@@ -17,6 +17,20 @@ EventType stringToEventType(const std::string& eventStr) {
     return ACCESS;
 }
 
+std::string eventTypeToString(int type) {
+    switch (type) {
+    case 0: return "LOGIN";
+    case 1: return "LOGOUT";
+    case 2: return "TOKEN_REFRESH";
+    case 3: return "ACCESS";
+    case 4: return "FAILED_LOGIN";
+    case 5: return "OPEN_APP";
+    case 6: return "DOWNLOAD";
+    case 7: return "ADMIN_ACTION";
+    default: return "UNKNOWN";
+    }
+}
+
 int splitCSVLine(const std::string& line, std::string fields[7]) {
     for (int j = 0; j < 7; j++) {
         fields[j] = "";

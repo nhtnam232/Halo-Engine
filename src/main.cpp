@@ -1,73 +1,90 @@
 ﻿#include <iostream>
 #include <string>
-#include "HaloEngine.h" // Đảm bảo file này đã include DataModels.h, DynamicArray.h, HashTable.h, CSVParser.h
+#include "HaloEngine.h"
+#include "LogAnalyzer.h"
 
-using namespace std;
+
+
+void printMenu() {
+    std::cout << "\n================ HALO SYSTEM MENU ================" << std::endl;
+    std::cout << "1. Hanh trinh truy xuat tai nguyen cua User trong mot khoang thoi gian" << std::endl;
+    std::cout << "2. Hanh trinh cua Resource trong mot khoang thoi gian" << std::endl;
+    std::cout << "3. Thong ke Top 10 Resource truy xuat nhieu nhat" << std::endl;
+    std::cout << "4. Thoat chuong trinh" << std::endl;
+    std::cout << "==================================================" << std::endl;
+    std::cout << "Nhap lua chon cua ban (1-4): ";
+}
 
 int main() {
-    // 1. Khai báo hệ thống
+    // Khoi tao he thong
     HaloSystem sys;
-
-    // 2. Khởi tạo - Cấp phát bộ nhớ cho mảng động và bảng băm trên Heap
     initSystem(sys);
 
-    cout << "=================================================" << endl;
-    cout << "   TEST LOADER - KIEM TRA LOI DOC FILE CSV       " << endl;
-    cout << "=================================================" << endl;
+    // Nap du lieu
+    std::string filePath;
+    std::cout << "Nhap duong dan den file CSV (vd: C:\\Data\\log.csv): ";
+    std::cin >> filePath;
 
-    // 3. Nhập đường dẫn file từ bàn phím
-    string filePath;
-    cout << "Nhap duong dan file CSV de test: ";
-    getline(cin, filePath);
-
-    // Tự động xóa dấu ngoặc kép nếu bạn xài tính năng "Copy as path" trên Windows
-    if (!filePath.empty() && filePath.front() == '"') filePath.erase(0, 1);
-    if (!filePath.empty() && filePath.back() == '"') filePath.erase(filePath.size() - 1);
-
-    cout << "\n[INFO] Dang tien hanh doc file..." << endl;
-
-    // 4. Gọi hàm load của bạn (bản chưa sửa hàm splitCSVLine)
+    std::cout << "Dang nap du lieu tu file: " << filePath << "..." << std::endl;
     loadDataFromCSV(sys, filePath);
 
-    // 5. In thử 3 dòng log đầu tiên để kiểm tra "sức khỏe" dữ liệu
-    if (sys.logs.size > 0) {
-        cout << "\n=================================================" << endl;
-        cout << "      KET QUA KIEM TRA 3 DONG LOG DAU TIEN      " << endl;
-        cout << "=================================================" << endl;
+    if (sys.logs.size == 0) {
+        std::cout << "Loi: Khong co du lieu hoac nap file that bai! Vui long kiem tra lai duong dan." << std::endl;
+        freeSystemMemory(sys);
+        return 1;
+    }
+    std::cout << "Nap thanh cong " << sys.logs.size << " dong log." << std::endl;
 
-        // Lấy tối đa 3 dòng để in
-        int testCount = (sys.logs.size < 3) ? sys.logs.size : 3;
+    // Tien xu ly: Sap xep log theo timestamp
+    std::cout << "Dang sap xep he thong log theo thoi gian..." << std::endl;
+    mySort(sys.logs.data, 0, sys.logs.size - 1, compareLogByTimestamp);
+    std::cout << "Da sap xep xong! He thong san sang hoat dong.\n";
 
-        for (int i = 0; i < testCount; i++) {
-            LogEntry entry = sys.logs.data[i];
-            cout << "Log thu " << i + 1 << ":" << endl;
-            cout << "  - User Index:     " << entry.userIndex << endl;
-            cout << "  - Device Index:   " << entry.deviceIndex << endl;
-            cout << "  - App Index:      " << entry.appIndex << endl;
-            cout << "  - Resource Index: " << entry.resourceIndex << endl;
-            cout << "  - Location:       [" << entry.location << "]" << endl;
-            cout << "  - Timestamp:      " << entry.timestamp;
+    // Menu
+    int choice;
+    while (true) {
+        printMenu();
+        std::cin >> choice;
 
-            // Bắt bài lỗi gán về 0
-            if (entry.timestamp == 0) {
-                cout << "  <-- [NGUY HIEM] Bi dinh loi ve 0 do dinh ky tu \\r!" << endl;
-            }
-            else {
-                cout << "  <-- [OK] Doc dung so!" << endl;
-            }
-            cout << "-------------------------------------------------" << endl;
+        if (choice == 4) {
+            std::cout << "\nDang dong he thong..." << std::endl;
+            break;
         }
-    }
-    else {
-        cout << "\n[LOI] Khong doc duoc dong log nao. Vui long kiem tra lai file hoac duong dan!" << endl;
+        if (choice < 1 || choice > 4) {
+            std::cout << "Lua chon khong hop le, vui long nhap lai!" << std::endl;
+            continue;
+        }
+        long long t1, t2;
+        std::cout << "Nhap timestamp bat dau (t1): ";
+        std::cin >> t1;
+        std::cout << "Nhap timestamp ket thuc (t2): ";
+        std::cin >> t2;
+
+        std::cout << "\n---------------- KET QUA ----------------\n";
+        switch (choice) {
+        case 1: {
+            std::string userId;
+            std::cout << "Nhap User ID can tra cuu: ";
+            std::cin >> userId;
+            searchUserJourneyRangeByTime(sys, userId, t1, t2);
+            break;
+        }
+        case 2: {
+            std::string resourceId;
+            std::cout << "Nhap Resource ID can tra cuu: ";
+            std::cin >> resourceId;
+            searchResourceJourneyRangeByTime(sys, resourceId, t1, t2);
+            break;
+        }
+        case 3: {
+            top10MostAccessedResources(sys, t1, t2);
+            break;
+        }
+        }
+        std::cout << "-----------------------------------------\n";
     }
 
-    // 6. Giải phóng bộ nhớ (Bảo vệ RAM)
-    cout << "\n[INFO] Dang giai phong bo nho he thong..." << endl;
     freeSystemMemory(sys);
 
-    cout << "--- Chuong trinh test ket thuc an toan! ---" << endl;
-
-    system("pause");
     return 0;
 }
