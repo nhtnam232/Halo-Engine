@@ -23,7 +23,7 @@ int main() {
     // Nap du lieu
     std::string filePath;
     std::cout << "Nhap duong dan den file CSV (vd: C:\\Data\\log.csv): ";
-    std::cin >> filePath;
+    std::getline(std::cin >> std::ws, filePath);
 
     std::cout << "Dang nap du lieu tu file: " << filePath << "..." << std::endl;
     loadDataFromCSV(sys, filePath);
@@ -31,20 +31,29 @@ int main() {
     if (sys.logs.size == 0) {
         std::cout << "Loi: Khong co du lieu hoac nap file that bai! Vui long kiem tra lai duong dan." << std::endl;
         freeSystemMemory(sys);
-        return 1;
+        return 0;
     }
     std::cout << "Nap thanh cong " << sys.logs.size << " dong log." << std::endl;
 
     // Tien xu ly: Sap xep log theo timestamp
     std::cout << "Dang sap xep he thong log theo thoi gian..." << std::endl;
     mySort(sys.logs.data, 0, sys.logs.size - 1, compareLogByTimestamp);
-    std::cout << "Da sap xep xong! He thong san sang hoat dong.\n";
-
+    std::cout << "Da sap xep xong!\n";
+    std::cout << "Dang don dep cac thong tin trung lap..." << std::endl;
+    removeDuplicateLogs(sys);
+    std::cout << "He thong san sang hoat dong!" << std::endl;
     // Menu
     int choice;
     while (true) {
         printMenu();
         std::cin >> choice;
+
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout << "Loi: Ban phai nhap mot chu so!" << std::endl;
+            continue;
+        }
 
         if (choice == 4) {
             std::cout << "\nDang dong he thong..." << std::endl;
@@ -57,8 +66,20 @@ int main() {
         long long t1, t2;
         std::cout << "Nhap timestamp bat dau (t1): ";
         std::cin >> t1;
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout << "Loi: Ban phai nhap mot chu so!" << std::endl;
+            continue;
+        }
         std::cout << "Nhap timestamp ket thuc (t2): ";
         std::cin >> t2;
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout << "Loi: Ban phai nhap mot chu so!" << std::endl;
+            continue;
+        }
 
         std::cout << "\n---------------- KET QUA ----------------\n";
         switch (choice) {
@@ -82,6 +103,9 @@ int main() {
         }
         }
         std::cout << "-----------------------------------------\n";
+        std::cout << "\nBam Enter de tiep tuc...";
+        std::cin.ignore();
+        std::cin.get();
     }
 
     freeSystemMemory(sys);

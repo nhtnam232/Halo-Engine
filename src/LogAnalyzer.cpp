@@ -2,6 +2,33 @@
 
 
 
+void removeDuplicateLogs(HaloSystem& sys) {
+	if (sys.logs.size <= 1) {
+		return;
+	}
+	int uniqueIndex = 1;
+	for (int i = 1; i < sys.logs.size; i++) {
+		const LogEntry& curr = sys.logs.data[i];
+		const LogEntry& prev = sys.logs.data[i - 1];
+
+		bool isDuplicate = (curr.timestamp == prev.timestamp &&
+			curr.userIndex == prev.userIndex &&
+			curr.resourceIndex == prev.resourceIndex &&
+			curr.event_type == prev.event_type);
+
+		if (!isDuplicate) {
+			sys.logs.data[uniqueIndex] = sys.logs.data[i];
+			uniqueIndex++;
+		}
+	}
+
+	int removedCount = sys.logs.size - uniqueIndex;
+	if (removedCount > 0) {
+		std::cout << "[He thong] Phat hien va xoa bo " << removedCount << " dong log trung lap." << std::endl;
+	}
+
+	sys.logs.size = uniqueIndex;
+}
 bool compareLogByTimestamp(const LogEntry& a, const LogEntry& b) {
 	return a.timestamp < b.timestamp;
 }
