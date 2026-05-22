@@ -109,8 +109,7 @@ void searchUserJourneyRangeByTime(const HaloSystem& sys, const std::string& user
 				<< appId << " -> "
 				<< resourceId
 				<< " | Hanh dong: " << eventTypeToString(log.event_type)
-				<< " | Vi tri: " << log.location
-				<< std::endl;
+				<< " | Vi tri: " << log.location << "\n";
 		}
 	}
 
@@ -121,14 +120,14 @@ void searchUserJourneyRangeByTime(const HaloSystem& sys, const std::string& user
 void searchResourceJourneyRangeByTime(const HaloSystem& sys, const std::string& resourceId, long long t1, long long t2) {
 	int resIdx = getIndex(sys.resourceMap, resourceId);
 	if (resIdx == -1) {
-		std::cout << "Tai nguyen khong ton tai!" << std::endl;
+		std::cout << "Tai nguyen khong ton tai!\n";
 		return;
 	}
 
 	int startIndex, endIndex;
 	findLogRangeByTime(sys.logs, t1, t2, startIndex, endIndex);
 	if (startIndex == -1 && endIndex == -1) {
-		std::cout << "Khong co du lieu log nao trong khoang thoi gian nay!" << std::endl;
+		std::cout << "Khong co du lieu log nao trong khoang thoi gian nay!\n";
 		return;
 	}
 
@@ -153,13 +152,12 @@ void searchResourceJourneyRangeByTime(const HaloSystem& sys, const std::string& 
 				<< deviceId << " -> "
 				<< appId
 				<< " | Hanh dong: " << actionStr
-				<< " | Vi tri: " << log.location
-				<< std::endl;
+				<< " | Vi tri: " << log.location << "\n";
 		}
 	}
 
 	if (!found) {
-		std::cout << "Tai nguyen khong co luot truy cap nao trong khoang thoi gian nay." << std::endl;
+		std::cout << "Tai nguyen khong co luot truy cap nao trong khoang thoi gian nay.\n";
 	}
 }
 void top10MostAccessedResources(const HaloSystem& sys, long long t1, long long t2) {
@@ -167,7 +165,7 @@ void top10MostAccessedResources(const HaloSystem& sys, long long t1, long long t
 	findLogRangeByTime(sys.logs, t1, t2, startIndex, endIndex);
 
 	if (startIndex == -1 && endIndex == -1) {
-		std::cout << "Khong co hoat dong truy xuat nao trong khoang thoi gian nay!" << std::endl;
+		std::cout << "Khong co hoat dong truy xuat nao trong khoang thoi gian nay!\n";
 		return;
 	}
 
@@ -189,21 +187,20 @@ void top10MostAccessedResources(const HaloSystem& sys, long long t1, long long t
 
 	mySort(tempResources, 0, numResources - 1, compareResourceByAccessCount);
 
-	std::cout << "TOP 10 TAI NGUYEN DUOC TRUY XUAT NHIEU NHAT" << std::endl;
+	std::cout << "TOP 10 TAI NGUYEN DUOC TRUY XUAT NHIEU NHAT\n";
 	int limit = (numResources < 10) ? numResources : 10;
 	int rank = 1;
 
 	for (int i = 0; i < limit; i++) {
 		if (tempResources[i].accessCount > 0) {
 			std::cout << rank << ". Resource ID: " << tempResources[i].resource_id
-				<< " | So luot truy xuat: " << tempResources[i].accessCount << " lan"
-				<< std::endl;
+				<< " | So luot truy xuat: " << tempResources[i].accessCount << " lan\n";
 			rank++;
 		}
 	}
 
 	if (rank == 1) {
-		std::cout << "Khong co tai nguyen nao duoc truy cap trong khoang thoi gian nay." << std::endl;
+		std::cout << "Khong co tai nguyen nao duoc truy cap trong khoang thoi gian nay.\n";
 	}
 
 	delete[] tempResources;
