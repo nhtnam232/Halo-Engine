@@ -2,7 +2,7 @@
 #include <string>
 #include "HaloEngine.h"
 #include "LogAnalyzer.h"
-
+#include <limits>
 
 
 void printMenu() {
@@ -17,7 +17,6 @@ void printMenu() {
 
 int main() {
     std::ios_base::sync_with_stdio(false);
-    std::cin.tie(NULL);
     // Khoi tao he thong
     HaloSystem sys;
     initSystem(sys);
@@ -51,9 +50,13 @@ int main() {
         std::cin >> choice;
 
         if (std::cin.fail()) {
+            if (std::cin.eof()) {
+                std::cout << "Ngat ket noi dau vao.Dang dong he thong...\n";
+                break; 
+            }
             std::cin.clear();
-            std::cin.ignore(10000, '\n');
-            std::cout << "Loi: Ban phai nhap mot chu so!" << std::endl;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Loi: Vui long nhap mot so nguyen hop le!" << std::endl;
             continue;
         }
 
@@ -69,26 +72,42 @@ int main() {
         std::cout << "Nhap timestamp bat dau (t1): ";
         std::cin >> t1;
         if (std::cin.fail()) {
+            if (std::cin.eof()) {
+                std::cout << "Ngat ket noi dau vao.Dang dong he thong...\n";
+                break;
+            }
             std::cin.clear();
-            std::cin.ignore(10000, '\n');
-            std::cout << "Loi: Ban phai nhap mot chu so!" << std::endl;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Loi: Vui long nhap mot so nguyen hop le!" << std::endl;
             continue;
         }
         std::cout << "Nhap timestamp ket thuc (t2): ";
         std::cin >> t2;
         if (std::cin.fail()) {
+            if (std::cin.eof()) {
+                std::cout << "\nNgat ket noi dau vao.Dang dong he thong...\n";
+                break;
+            }
             std::cin.clear();
-            std::cin.ignore(10000, '\n');
-            std::cout << "Loi: Ban phai nhap mot chu so!" << std::endl;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Loi: Vui long nhap mot so nguyen hop le!" << std::endl;
             continue;
         }
-
+        if (t1 > t2) {
+            std::cout << "Loi: t1 phai nho hon hoac bang t2!" << std::endl;
+            continue;
+        }
         std::cout << "\n---------------- KET QUA ----------------\n";
         switch (choice) {
         case 1: {
             std::string userId;
             std::cout << "Nhap User ID can tra cuu: ";
             std::cin >> userId;
+            if (std::cin.eof()) {
+                std::cout << "\nNgat ket noi dau vao. Dang dong he thong...\n";
+                freeSystemMemory(sys);
+                return 0;
+            }
             searchUserJourneyRangeByTime(sys, userId, t1, t2);
             break;
         }
@@ -96,6 +115,11 @@ int main() {
             std::string resourceId;
             std::cout << "Nhap Resource ID can tra cuu: ";
             std::cin >> resourceId;
+            if (std::cin.eof()) {
+                std::cout << "\nNgat ket noi dau vao. Dang dong he thong...\n";
+                freeSystemMemory(sys);
+                return 0;
+            }
             searchResourceJourneyRangeByTime(sys, resourceId, t1, t2);
             break;
         }
@@ -106,8 +130,10 @@ int main() {
         }
         std::cout << "-----------------------------------------\n";
         std::cout << "\nBam Enter de tiep tuc...";
-        std::cin.ignore();
-        std::cin.get();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (std::cin.get() == EOF) {
+            break;
+        }
     }
 
     freeSystemMemory(sys);
