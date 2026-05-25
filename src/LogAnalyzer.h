@@ -39,7 +39,7 @@ void mySort(T* arr, int low, int high, bool (*compare)(const T&, const T&)) {
 }
 void removeDuplicateLogs(HaloSystem& sys);
 bool compareLogByTimestamp(const LogEntry& a, const LogEntry& b);
-bool compareResourceByAccessCount(const Resource& a, const Resource& b);
+bool compareResourceByAccessThenTime(const Resource& a, const Resource& b);
 void findLogRangeByTime(const DynamicArray<LogEntry>& logs, long long t1, long long t2, int& startIndex, int& endIndex);
 void searchUserJourneyRangeByTime(const HaloSystem& sys, const std::string& userId, long long t1, long long t2);
 void searchResourceJourneyRangeByTime(const HaloSystem& sys, const std::string& resourceId, long long t1, long long t2);

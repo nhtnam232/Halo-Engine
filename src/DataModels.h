@@ -17,6 +17,7 @@ struct App {
 struct Resource {
 	std::string resource_id;
 	int accessCount;
+	long long timestamp;
 };
 struct LogEntry {
 	int userIndex;

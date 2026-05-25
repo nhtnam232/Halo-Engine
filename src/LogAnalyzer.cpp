@@ -32,8 +32,11 @@ void removeDuplicateLogs(HaloSystem& sys) {
 bool compareLogByTimestamp(const LogEntry& a, const LogEntry& b) {
 	return a.timestamp < b.timestamp;
 }
-bool compareResourceByAccessCount(const Resource& a, const Resource& b) {
-	return a.accessCount > b.accessCount;
+bool compareResourceByAccessThenTime(const Resource& a, const Resource& b) {
+	if (a.accessCount != b.accessCount) {
+		return a.accessCount > b.accessCount;
+	}
+	return a.timestamp > b.timestamp;
 }
 void findLogRangeByTime(const DynamicArray<LogEntry>& logs, long long t1, long long t2, int& startIndex, int& endIndex) {
 	startIndex = -1;
@@ -175,6 +178,7 @@ void top10MostAccessedResources(const HaloSystem& sys, long long t1, long long t
 	for (int i = 0; i < numResources; i++) {
 		tempResources[i].resource_id = sys.resources.data[i].resource_id;
 		tempResources[i].accessCount = 0;
+		tempResources[i].timestamp = 0;
 	}
 
 	for (int i = startIndex; i <= endIndex; i++) {
@@ -183,9 +187,10 @@ void top10MostAccessedResources(const HaloSystem& sys, long long t1, long long t
 		}
 		int resIdx = sys.logs.data[i].resourceIndex;
 		tempResources[resIdx].accessCount++;
+		tempResources[resIdx].timestamp = sys.logs.data[i].timestamp;
 	}
 
-	mySort(tempResources, 0, numResources - 1, compareResourceByAccessCount);
+	mySort(tempResources, 0, numResources - 1, compareResourceByAccessThenTime);
 
 	std::cout << "TOP 10 TAI NGUYEN DUOC TRUY XUAT NHIEU NHAT\n";
 	int limit = (numResources < 10) ? numResources : 10;
